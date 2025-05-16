@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: sql_practice_db
+    environment:
+      MYSQL_ROOT_PASSWORD: practice123
+      MYSQL_DATABASE: shop_db
+      MYSQL_USER: student
+      MYSQL_PASSWORD: student123
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./init_data.sql:/docker-entrypoint-initdb.d/init_data.sql
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    
+volumes:
+  mysql_data:
