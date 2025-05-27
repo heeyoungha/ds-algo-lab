@@ -152,3 +152,9 @@ ENV/
 # Temporary files
 *.tmp
 *.temp
+
+# Linux practice - generated log files
+linux/basic/set_up/*.log
+linux/basic/set_up/filtered_*.log
+
+
