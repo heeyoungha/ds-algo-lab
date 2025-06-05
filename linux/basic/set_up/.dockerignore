@@ -1,0 +1,29 @@
+# Git 관련
+.git
+.gitignore
+
+# Python 관련
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv
+
+# IDE 관련
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS 관련
+.DS_Store
+Thumbs.db
+
+# 기타
+*.log
+*.tmp
+

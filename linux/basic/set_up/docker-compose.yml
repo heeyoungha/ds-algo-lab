@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  linux-practice:
+    build:
+      context: ../../..  # 프로젝트 루트 (ds-algo-lab)
+      dockerfile: linux/basic/set_up/Dockerfile
+    container_name: linux-practice
+    volumes:
+      # 프로젝트 전체를 마운트 (리눅스 연습 중에도 다른 폴더 접근 가능)
+      - ../../..:/workspace
+    stdin_open: true
+    tty: true
+    # 컨테이너 재시작 시 자동 시작하지 않음 (학습용)
+    restart: "no"
+
