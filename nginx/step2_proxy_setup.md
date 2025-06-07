@@ -317,10 +317,103 @@ ln -s /etc/nginx/sites-available/proxy.conf /etc/nginx/sites-enabled/proxy.conf
 # 결과: sites-enabled/proxy.conf → sites-available/proxy.conf를 가리킴
 ```
 
-### 장점
-- 설정 파일을 쉽게 활성화/비활성화 가능
-- 여러 설정 파일을 관리하기 용이
-- 원본 파일은 sites-available에 보관
+---
+
+### 🔹 sites-available과 sites-enabled가 필요한 이유
+
+#### 1. 설정 파일의 활성화/비활성화 관리
+
+**문제 상황**: 하나의 nginx 서버에서 여러 도메인을 관리해야 할 때
+
+```bash
+# 예시: 여러 사이트 설정 파일
+/etc/nginx/sites-available/proxy.conf      # 프록시 서버
+/etc/nginx/sites-available/api.conf        # API 서버
+/etc/nginx/sites-available/blog.conf      # 블로그
+/etc/nginx/sites-available/shop.conf       # 쇼핑몰
+```
+
+**sites-available/sites-enabled 구조 사용 시**:
+```bash
+# 특정 사이트만 활성화
+ln -s /etc/nginx/sites-available/proxy.conf /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/api.conf /etc/nginx/sites-enabled/
+
+# 나중에 블로그를 추가하고 싶을 때
+ln -s /etc/nginx/sites-available/blog.conf /etc/nginx/sites-enabled/
+nginx -s reload  # 재시작 없이 설정 적용
+
+# 쇼핑몰을 일시적으로 비활성화하고 싶을 때
+rm /etc/nginx/sites-enabled/shop.conf
+nginx -s reload  # 즉시 비활성화
+```
+
+**만약 이 구조가 없다면**:
+- nginx.conf에 직접 작성 → 파일이 길어지고 관리 어려움
+- 설정 파일을 삭제/복사로 관리 → 실수로 삭제할 위험
+- 어떤 설정이 활성화되어 있는지 파악 어려움
+
+#### 2. 원본 파일 보존
+
+**심볼릭 링크를 사용하는 이유**:
+- 원본 파일은 `sites-available`에 안전하게 보관
+- `sites-enabled`의 링크를 삭제해도 원본은 유지됨
+- 나중에 다시 활성화하기 쉬움
+
+```bash
+# 비활성화 (링크만 삭제)
+rm /etc/nginx/sites-enabled/shop.conf
+# 원본 파일(/etc/nginx/sites-available/shop.conf)은 그대로 유지됨
+
+# 다시 활성화
+ln -s /etc/nginx/sites-available/shop.conf /etc/nginx/sites-enabled/
+```
+
+#### 3. 여러 환경 관리
+
+**개발/스테이징/프로덕션 환경 관리**:
+```bash
+# 개발 환경용 설정
+/etc/nginx/sites-available/proxy-dev.conf
+
+# 프로덕션 환경용 설정
+/etc/nginx/sites-available/proxy-prod.conf
+
+# 환경에 따라 다른 설정 활성화
+# 개발: ln -s proxy-dev.conf sites-enabled/
+# 프로덕션: ln -s proxy-prod.conf sites-enabled/
+```
+
+#### 4. 설정 파일 버전 관리
+
+- `sites-available`의 파일만 버전 관리 (Git 등)
+- `sites-enabled`는 실행 환경에 따라 다르므로 버전 관리에서 제외
+- 설정 파일의 변경 이력을 추적하기 쉬움
+
+#### 5. 실수 방지
+
+**직접 파일을 삭제하는 경우**:
+```bash
+# ❌ 위험: 실수로 파일을 삭제하면 복구 어려움
+rm /etc/nginx/sites-enabled/shop.conf  # 원본도 삭제됨 (만약 복사했다면)
+```
+
+**심볼릭 링크를 사용하는 경우**:
+```bash
+# ✅ 안전: 링크만 삭제되므로 원본은 보존됨
+rm /etc/nginx/sites-enabled/shop.conf  # 원본은 sites-available에 그대로
+```
+
+---
+
+### 장점 요약
+
+1. **쉬운 활성화/비활성화**: 심볼릭 링크 생성/삭제만으로 관리
+2. **원본 파일 보존**: 링크 삭제해도 원본은 안전
+3. **여러 설정 파일 관리**: 확장성과 유지보수성 향상
+4. **명확한 상태 파악**: sites-enabled만 보면 활성화된 사이트 확인 가능
+5. **버전 관리 용이**: sites-available만 버전 관리하면 됨
+6. **실수 방지**: 원본 파일을 보호하면서 설정 관리 가능
 
 ---
 
