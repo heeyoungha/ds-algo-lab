@@ -55,12 +55,6 @@ RUN mkdir -p /etc/nginx/sites-available \
 # 기본 nginx.conf를 우리가 만든 것으로 교체
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# sites-available의 설정 파일 복사
-COPY sites-available/ /etc/nginx/sites-available/
-
-# 심볼릭 링크 생성 (sites-available → sites-enabled)
-RUN ln -s /etc/nginx/sites-available/proxy.conf /etc/nginx/sites-enabled/proxy.conf
-
 # 포트 노출
 EXPOSE 80
 
@@ -232,22 +226,10 @@ networks:
 
 ---
 
-## (5) 파일 생성 및 확인
+## (5) 심볼릭 링크 생성 및 확인
 
-### 파일 생성 명령어
-
-```bash
-# nginx 폴더로 이동
-cd nginx
-
-# 디렉토리 생성
-mkdir -p proxy/sites-available
-
-# Dockerfile 생성 (위 내용 복사)
-# nginx.conf 생성 (위 내용 복사)
-# sites-available/proxy.conf 생성 (위 내용 복사)
-# docker-compose.yml 생성 (위 내용 복사)
-```
+### 심볼릭 링크 생성 명령어 (sites-available → sites-enabled)
+`ln -s /etc/nginx/sites-available/proxy.conf /etc/nginx/sites-enabled/proxy.conf`
 
 ### 파일 구조 확인
 
@@ -256,36 +238,25 @@ tree nginx/
 # 또는
 ls -R nginx/
 ```
-
----
-
-## (6) 도커 빌드 및 실행
-
-### 빌드 및 실행
-
-```bash
-# 도커 이미지 빌드
-docker-compose build proxy
-
-# 컨테이너 실행
-docker-compose up -d proxy
-
-# 로그 확인
-docker-compose logs proxy
+실행 결과 
+```
+/etc # tree nginx
+nginx
+├── conf.d
+│   └── default.conf
+├── fastcgi.conf
+├── fastcgi_params
+├── mime.types
+├── modules -> /usr/lib/nginx/modules
+├── nginx.conf
+├── scgi_params
+├── sites-available
+│   └── proxy.conf
+├── sites-enabled
+│   └── proxy.conf -> /etc/nginx/sites-available/proxy.conf // 심볼릭 링크 확인
+└── uwsgi_params
 ```
 
-### 실행 확인
-
-```bash
-# 컨테이너 상태 확인
-docker-compose ps
-
-# nginx 설정 테스트
-docker-compose exec proxy nginx -t
-
-# nginx 재시작 (설정 변경 시)
-docker-compose exec proxy nginx -s reload
-```
 
 ---
 

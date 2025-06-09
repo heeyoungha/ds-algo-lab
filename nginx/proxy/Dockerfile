@@ -8,14 +8,12 @@ RUN mkdir -p /etc/nginx/sites-available \
 # 기본 nginx.conf를 우리가 만든 것으로 교체
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# sites-available의 설정 파일 복사
-COPY sites-available/ /etc/nginx/sites-available/
-
 # 심볼릭 링크 생성 (sites-available → sites-enabled)
-RUN ln -s /etc/nginx/sites-available/proxy.conf /etc/nginx/sites-enabled/proxy.conf
+# RUN ln -s /etc/nginx/sites-available/proxy.conf /etc/nginx/sites-enabled/proxy.conf
 
 # 포트 노출
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
+
 
