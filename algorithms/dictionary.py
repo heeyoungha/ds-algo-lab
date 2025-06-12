@@ -1,5 +1,79 @@
 text = """
 =========================================
+딕셔너리 컴프리헨션 (Dictionary Comprehension)
+
+리스트 컴프리헨션과 유사하지만 딕셔너리를 생성하는 문법
+
+🔹 기본 문법: {key: value for item in iterable}
+🔹 enumerate와 함께 사용
+🔹 조건문 포함 가능
+"""
+print(text)
+
+# 상세 설명과 예시
+print("🔸 기본 문법")
+
+# (1) 리스트에서 딕셔너리 생성
+numbers = [1, 2, 3, 4, 5]
+squared = {num: num ** 2 for num in numbers}
+
+print(f"(1) squared = {squared}")
+
+print("")
+
+# (2) enumerate와 함께 사용 (인덱스: 값)
+players = ["mumu", "soe", "poe", "kai"]
+rank = {i: name for i, name in enumerate(players)}
+
+print(f"(2) rank = {rank}")
+
+print("")
+
+# (3) enumerate 역순 (값: 인덱스) - 가장 많이 사용!
+players = ["mumu", "soe", "poe", "kai"]
+rank_by_name = {name: i for i, name in enumerate(players)}
+print(f"(3) rank_by_name = {rank_by_name}")
+
+print("")
+
+# (4) 조건문 포함
+even_squared = {num: num ** 2 for num in numbers if num % 2 == 0}
+
+print(f"(4) even_squared = {even_squared}")
+
+print("")
+
+# (5) 두 리스트를 조합
+keys = ["name", "age", "city"]
+values = ["Alice", 25, "Seoul"]
+person = {k: v for k, v in zip(keys, values)}
+
+print(f"(5) person: {person}")
+print("")
+
+# (6) 문자열을 딕셔너리로 변환 (문자: 빈도수)
+text = "hello"
+char_count = {char: text.count(char) for char in set(text)}
+
+print(f"(6) char_count: {char_count}")
+print("")
+
+# (7) 기존 딕셔너리 변환
+original = {"a": 1, "b": 2, "c": 3}
+doubled = {k: v * 2 for k, v in original.items()}
+
+print(f"(7) doubled: {doubled}")
+print("")
+
+# (8) 값 기준 필터링
+scores = {"Alice": 85, "Bob": 92, "Charlie": 78, "David": 95}
+high_scores = {name: score for name, score in scores.items() if score >= 90}
+
+print(f"(8) high_scores: {high_scores}")
+print("")
+
+text = """
+=========================================
 딕셔너리 정렬
 
 딕셔너리를 value 값 기준으로 정렬하는 방법
@@ -7,7 +81,6 @@ text = """
 🔹 sorted() 함수와 lambda 사용
 🔹 items() 메서드 활용
 """
-
 print(text)
 
 # 상세 설명과 예시
